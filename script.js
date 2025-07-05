@@ -10,28 +10,29 @@ function convertToRoman(num) {
     };
     
     let result = '';
-    let remaining = num;
     
-    for (const key in obj) {
-        const [symbol, value] = obj[key];
-        while (remaining >= value) {
+    for (let i = 0; i < 7; i++) {
+        const [symbol, value] = obj[i];
+        while (num >= value) {
             result += symbol;
-            remaining -= value;
+            num -= value;
         }
         
-        // Handle subtractive notation (4, 9, 40, etc.)
-        if (value.toString().startsWith('5') || value.toString().startsWith('50') || value.toString().startsWith('500')) {
-            const nextKey = parseInt(key) + 1;
-            if (obj[nextKey]) {
-                const [nextSymbol, nextValue] = obj[nextKey];
-                const combinedValue = value - nextValue;
-                if (remaining >= combinedValue && combinedValue > 0) {
-                    result += nextSymbol + symbol;
-                    remaining -= combinedValue;
-                }
+        // Handle special cases (4, 9, 40, 90, etc.)
+        if (i % 2 === 1) { // Only for D (500), L (50), V (5)
+            const nextSymbol = obj[i+1][0];
+            const nextValue = obj[i+1][1];
+            const specialValue = value - nextValue;
+            
+            if (num >= specialValue) {
+                result += nextSymbol + symbol;
+                num -= specialValue;
             }
         }
     }
     
     return result;
 }
+
+// do not edit below this line
+module.exports = convertToRoman
